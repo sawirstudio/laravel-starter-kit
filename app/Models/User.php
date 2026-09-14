@@ -7,6 +7,7 @@ namespace App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -17,11 +18,11 @@ use Laravel\Sanctum\HasApiTokens;
 final class User extends Authenticatable
 {
     use HasApiTokens;
+
     /** @use HasFactory<UserFactory> */
     use HasFactory;
 
     use Notifiable;
-
     use SoftDeletes;
 
     /**
@@ -35,5 +36,13 @@ final class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    /**
+     * @return Attribute<bool, never>
+     */
+    protected function isSuperAdmin(): Attribute
+    {
+        return Attribute::get(fn (): bool => in_array($this->email, config()->array('app.admins')));
     }
 }
