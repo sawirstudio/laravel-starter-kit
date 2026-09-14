@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Providers;
 
+use App\Models\OrgInvitation;
+use App\Models\OrgUser;
 use App\Models\Role;
 use App\Models\User;
 use Carbon\CarbonImmutable;
@@ -51,6 +53,8 @@ final class AppServiceProvider extends ServiceProvider
         Relation::enforceMorphMap([
             'user' => User::class,
             'role' => Role::class,
+            'org_user' => OrgUser::class,
+            'org_invitation' => OrgInvitation::class,
         ]);
 
         Gate::define('viewApiDocs', fn (User $user): bool => $user->is_super_admin);
