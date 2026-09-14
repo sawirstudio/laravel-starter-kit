@@ -8,6 +8,7 @@ namespace App\Models;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
@@ -16,11 +17,12 @@ use Laravel\Sanctum\HasApiTokens;
 final class User extends Authenticatable
 {
     use HasApiTokens;
-
     /** @use HasFactory<UserFactory> */
     use HasFactory;
 
     use Notifiable;
+
+    use SoftDeletes;
 
     /**
      * Get the attributes that should be cast.
