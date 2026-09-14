@@ -7,6 +7,7 @@ use Rector\CodingStyle\Rector\ClassMethod\MakeInheritedMethodVisibilitySameAsPar
 use Rector\Config\RectorConfig;
 use Rector\Php83\Rector\ClassMethod\AddOverrideAttributeToOverriddenMethodsRector;
 use Rector\Php85\Rector\Property\AddOverrideAttributeToOverriddenPropertiesRector;
+use RectorLaravel\Rector\Class_\AddHasFactoryToModelsRector;
 use RectorLaravel\Set\LaravelSetList;
 
 return RectorConfig::configure()
@@ -43,6 +44,10 @@ return RectorConfig::configure()
         AddOverrideAttributeToOverriddenMethodsRector::class,
         MakeInheritedMethodVisibilitySameAsParentRector::class,
         AddOverrideAttributeToOverriddenPropertiesRector::class,
+        AddHasFactoryToModelsRector::class => [
+            __DIR__.'/app/Models/Permissionable.php',
+            __DIR__.'/app/Models/Roleable.php',
+        ],
     ])
     ->withPreparedSets(
         deadCode: true,

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Models\Concerns\HasRoles;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Casts\Attribute;
@@ -22,6 +23,7 @@ final class User extends Authenticatable
     /** @use HasFactory<UserFactory> */
     use HasFactory;
 
+    use HasRoles;
     use Notifiable;
     use SoftDeletes;
 
