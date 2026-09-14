@@ -7,6 +7,8 @@ namespace App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use App\Models\Concerns\HasRoles;
 use Database\Factories\UserFactory;
+use Filament\Models\Contracts\FilamentUser;
+use Filament\Panel;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -14,9 +16,10 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use Override;
 
 #[Hidden(['password', 'remember_token'])]
-final class User extends Authenticatable
+final class User extends Authenticatable implements FilamentUser
 {
     use HasApiTokens;
 
@@ -26,6 +29,16 @@ final class User extends Authenticatable
     use HasRoles;
     use Notifiable;
     use SoftDeletes;
+
+    #[Override]
+    public function canAccessPanel(Panel $panel): bool
+    {
+        if ($panel->getId() === 'admin') {
+            return $this->is_super_admin;
+        }
+
+        return true;
+    }
 
     /**
      * Get the attributes that should be cast.
