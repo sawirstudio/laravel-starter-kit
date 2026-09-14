@@ -13,6 +13,7 @@
         "laravel/horizon": "^5.49",
         "laravel/sanctum": "^4.0",
         "laravel/tinker": "^3.0",
+        "spatie/laravel-one-time-passwords": "^1.1",
         "stechstudio/filament-impersonate": "^5.6"
     },
     "require-dev": {

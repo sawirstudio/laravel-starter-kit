@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use App\Models\Concerns\HasRoles;
 use Database\Factories\UserFactory;
 use Filament\Models\Contracts\FilamentUser;
 use Filament\Panel;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -17,15 +17,17 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Override;
+use Spatie\OneTimePasswords\Models\Concerns\HasOneTimePasswords;
 
 #[Hidden(['password', 'remember_token'])]
-final class User extends Authenticatable implements FilamentUser
+final class User extends Authenticatable implements FilamentUser, MustVerifyEmail
 {
     use HasApiTokens;
 
     /** @use HasFactory<UserFactory> */
     use HasFactory;
 
+    use HasOneTimePasswords;
     use HasRoles;
     use Notifiable;
     use SoftDeletes;
