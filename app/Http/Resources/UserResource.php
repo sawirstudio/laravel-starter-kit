@@ -1,15 +1,18 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\JsonApi\JsonApiResource;
 
-class UserResource extends JsonApiResource
+final class UserResource extends JsonApiResource
 {
     /**
      * The resource's attributes.
      */
-    public $attributes = [
+    /** @var list<string> */
+    public array $attributes = [
         'name',
         'email',
         'email_verified_at',
@@ -18,7 +21,8 @@ class UserResource extends JsonApiResource
     /**
      * The resource's relationships.
      */
-    public $relationships = [
+    /** @var list<string> */
+    public array $relationships = [
         // ...
     ];
 }

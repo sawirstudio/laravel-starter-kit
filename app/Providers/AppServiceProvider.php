@@ -8,7 +8,7 @@ use App\Models\User;
 use Carbon\CarbonImmutable;
 use Dedoc\Scramble\Scramble;
 use Dedoc\Scramble\Support\Generator\OpenApi;
-use Dedoc\Scramble\Support\Generator\SecurityScheme;
+use Dedoc\Scramble\Support\Generator\SecuritySchemes\HttpSecurityScheme;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Facades\Date;
@@ -51,13 +51,15 @@ final class AppServiceProvider extends ServiceProvider
             'user' => User::class,
         ]);
 
-        Gate::define('viewApiDocs', fn (User $user) => $user?->is_super_admin);
+        Gate::define('viewApiDocs', fn (User $user): bool => $user->is_super_admin);
 
+        // @codeCoverageIgnoreStart
         Scramble::configure()
-        ->withDocumentTransformers(function (OpenApi $openApi) {
-            $openApi->secure(
-                SecurityScheme::http('bearer')
-            );
-        });
+            ->withDocumentTransformers(function (OpenApi $openApi): void {
+                $openApi->secure(
+                    (new HttpSecurityScheme('bearer'))->as('http')
+                );
+            });
+        // @codeCoverageIgnoreEnd
     }
 }
