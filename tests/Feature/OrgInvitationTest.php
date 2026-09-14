@@ -104,3 +104,20 @@ test('tampered links are rejected', function (): void {
         ->get(route('org-invitations.accept', ['invitation' => $invitation]))
         ->assertForbidden();
 });
+
+test('old expired and retired invitations are pruned', function (): void {
+    $freshPending = OrgInvitation::factory()->create(['expires_at' => now()->addDay()]);
+    $recentlyExpired = OrgInvitation::factory()->create(['expires_at' => now()->subDays(29)]);
+    $oldExpired = OrgInvitation::factory()->create(['expires_at' => now()->subDays(31)]);
+    $recentlyAccepted = OrgInvitation::factory()->create(['expires_at' => now()->addDay()]);
+    $recentlyAccepted->delete();
+
+    $oldAccepted = OrgInvitation::factory()->create(['expires_at' => now()->addDay(), 'deleted_at' => now()->subDays(31)]);
+
+    $this->artisan('model:prune', ['--model' => OrgInvitation::class])->assertSuccessful();
+
+    $remaining = OrgInvitation::query()->withTrashed()->pluck('id')->sort()->values()->all();
+
+    expect($remaining)->toBe([$freshPending->id, $recentlyExpired->id, $recentlyAccepted->id])
+        ->and(OrgInvitation::query()->withTrashed()->whereKey([$oldExpired->id, $oldAccepted->id])->exists())->toBeFalse();
+});

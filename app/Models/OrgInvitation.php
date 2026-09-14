@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Prunable;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Notifications\Notifiable;
@@ -29,6 +30,7 @@ final class OrgInvitation extends Model
 
     use HasRoles;
     use Notifiable;
+    use Prunable;
     use SoftDeletes;
 
     /**
@@ -80,6 +82,22 @@ final class OrgInvitation extends Model
 
             return $orgUser;
         });
+    }
+
+    /**
+     * Invitations that expired, or were accepted or revoked, more than 30 days ago.
+     *
+     * @return Builder<self>
+     */
+    public function prunable(): Builder
+    {
+        $cutoff = now()->subDays(30);
+
+        return self::query()
+            ->withTrashed()
+            ->where(fn (Builder $query) => $query
+                ->where('expires_at', '<', $cutoff)
+                ->orWhere('deleted_at', '<', $cutoff));
     }
 
     /**
