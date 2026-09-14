@@ -1,7 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Providers;
 
+use App\Models\User;
 use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Relation;
@@ -14,7 +17,7 @@ use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Sleep;
 use Illuminate\Validation\Rules\Password;
 
-class AppServiceProvider extends ServiceProvider
+final class AppServiceProvider extends ServiceProvider
 {
     /**
      * Register any application services.
@@ -41,7 +44,7 @@ class AppServiceProvider extends ServiceProvider
         Password::defaults(fn (): ?Password => app()->isProduction() ? Password::min(12)->letters()->mixedCase()->numbers()->symbols()->max(255)->uncompromised() : null);
 
         Relation::enforceMorphMap([
-            'user' => \App\Models\User::class,
+            'user' => User::class,
         ]);
     }
 }
