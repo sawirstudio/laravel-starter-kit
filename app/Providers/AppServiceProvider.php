@@ -6,10 +6,14 @@ namespace App\Providers;
 
 use App\Models\User;
 use Carbon\CarbonImmutable;
+use Dedoc\Scramble\Scramble;
+use Dedoc\Scramble\Support\Generator\OpenApi;
+use Dedoc\Scramble\Support\Generator\SecurityScheme;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Vite;
@@ -46,5 +50,14 @@ final class AppServiceProvider extends ServiceProvider
         Relation::enforceMorphMap([
             'user' => User::class,
         ]);
+
+        Gate::define('viewApiDocs', fn (User $user) => $user?->is_super_admin);
+
+        Scramble::configure()
+        ->withDocumentTransformers(function (OpenApi $openApi) {
+            $openApi->secure(
+                SecurityScheme::http('bearer')
+            );
+        });
     }
 }
