@@ -49,12 +49,4 @@ return RectorConfig::configure()
             __DIR__.'/app/Models/Roleable.php',
         ],
     ])
-    ->withPreparedSets(
-        deadCode: true,
-        codeQuality: true,
-        typeDeclarations: true,
-        privatization: true,
-        earlyReturn: true,
-        codingStyle: true,
-    )
     ->withPhpSets();
